@@ -131,7 +131,7 @@ void SyncWithWallets(const CTransaction& tx, const CBlock* pblock, bool fUpdate,
 {
     if (!fConnect)
     {
-        // ppcoin: wallets need to refund inputs when disconnecting coinstake
+        // KryptKoin: wallets need to refund inputs when disconnecting coinstake
         if (tx.IsCoinStake())
         {
             BOOST_FOREACH(CWallet* pwallet, setpwalletRegistered)
@@ -2764,6 +2764,9 @@ bool LoadExternalBlockFile(FILE* fileIn)
 extern map<uint256, CAlert> mapAlerts;
 extern CCriticalSection cs_mapAlerts;
 
+static string strMintMessage = "Info: Minting suspended due to locked wallet.";
+static string strMintWarning;
+
 string GetWarnings(string strFor)
 {
     int nPriority = 0;
@@ -2772,6 +2775,13 @@ string GetWarnings(string strFor)
 
     if (GetBoolArg("-testsafemode"))
         strRPC = "test";
+		
+		    // ppcoin: wallet lock warning for minting
+    if (strMintWarning != "")
+     {
+         nPriority = 0;
+         strStatusBar = strMintWarning;
+     }
 
     // Misc warnings like out of disk space and clock is wrong
     if (strMiscWarning != "")
@@ -4337,8 +4347,12 @@ if ((!fGenerateBitcoins) && !fProofOfStake)
             // ppcoin: if proof-of-stake block found then process block
             if (pblock->IsProofOfStake())
             {
-         	if (!pblock->SignBlock(*pwalletMain))
-                    continue;
+                             if (!pblock->SignBlock(*pwalletMain))
+                 {
+                    strMintWarning = strMintMessage;
+                      continue;
+                }
+                strMintWarning = "";
                 printf("CPUMiner : proof-of-stake block found %s\n", pblock->GetHash().ToString().c_str()); 
                 SetThreadPriority(THREAD_PRIORITY_NORMAL);
                 CheckWork(pblock.get(), *pwalletMain, reservekey);
@@ -4397,8 +4411,13 @@ if ((!fGenerateBitcoins) && !fProofOfStake)
                     pblock->nNonce = nNonceFound;
                     assert(result == pblock->GetHash());
                     if (!pblock->SignBlock(*pwalletMain))
-                        break;
-                  
+
+                    {
+			// strMintWarning = strMintMessage;
+                          break;
+                     }
+                     strMintWarning = "";
+ 
                     SetThreadPriority(THREAD_PRIORITY_NORMAL);
                     CheckWork(pblock.get(), *pwalletMain, reservekey);
                     SetThreadPriority(THREAD_PRIORITY_LOWEST);
