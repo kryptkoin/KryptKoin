@@ -86,7 +86,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Balance:</string>
+             <string>Spendable:</string>
             </property>
            </widget>
           </item>
@@ -357,6 +357,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="unlockWalletButton">
+       <property name="text">
+        <string>Unlock Wallet</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
