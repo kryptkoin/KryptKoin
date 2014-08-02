@@ -61,6 +61,7 @@
 extern CWallet *pwalletMain;
 extern int64 nLastCoinStakeSearchInterval;
 extern unsigned int nStakeTargetSpacing;
+extern bool fWalletUnlockMintOnly;
 
 BitcoinGUI::BitcoinGUI(QWidget *parent):
     QMainWindow(parent),
@@ -881,10 +882,10 @@ void BitcoinGUI::unlockWallet()
     if(!walletModel)
         return;
     // Unlock wallet when requested by wallet model
-    if(walletModel->getEncryptionStatus() == WalletModel::Locked)
+    if(walletModel->getEncryptionStatus() == WalletModel::Locked || fWalletUnlockMintOnly)
     {
 
-AskPassphraseDialog::Mode mode = AskPassphraseDialog::UnlockMinting;
+AskPassphraseDialog::Mode mode = AskPassphraseDialog::Unlock;
 AskPassphraseDialog dlg(mode, this);
 
         dlg.setModel(walletModel);
@@ -907,9 +908,13 @@ AskPassphraseDialog dlg(mode, this);
         dlg.setModel(walletModel);
         dlg.exec();
     }
-	else
- walletModel->setWalletLocked(true);
+    else if(walletModel->getEncryptionStatus() == WalletModel::Unlocked)
+    {
+        walletModel->setWalletLocked(true);
+        fWalletUnlockMintOnly = false;
+    }
 }
+
 void BitcoinGUI::showNormalIfMinimized(bool fToggleHidden)
 {
     // activateWindow() (sometimes) helps with keyboard focus on Windows
