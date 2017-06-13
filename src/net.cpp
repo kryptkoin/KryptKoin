@@ -1149,11 +1149,9 @@ void MapPort()
 // The first name is used as information source for addrman.
 // The second name should resolve to a list of seed addresses.
 static const char *strDNSSeed[][2] = {
-    {"107.170.176.199", "107.170.176.199"},
-    {"188.226.245.225", "188.226.245.225"},
-	{"107.170.251.221", "107.170.251.221"},
-	{"128.199.183.20", "128.199.183.20"},
-	{"162.243.97.122", "162.243.97.122"},
+    {"alltheco.in", "krypt01.alltheco.in"},
+    {"alltheco.in", "krypt02.alltheco.in"},
+	{NULL, NULL}
 };
 
 void ThreadDNSAddressSeed(void* parg)
@@ -1849,13 +1847,11 @@ void StartNode(void* parg)
     // Start threads
     //
 
-/*
     if (!GetBoolArg("-dnsseed", true))
         printf("DNS seeding disabled\n");
     else
         if (!NewThread(ThreadDNSAddressSeed, NULL))
             printf("Error: NewThread(ThreadDNSAddressSeed) failed\n");
-*/
 
     if (!GetBoolArg("-dnsseed", false))
         printf("DNS seeding disabled\n");
