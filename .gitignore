@@ -1,0 +1,17 @@
+src/*.exe
+src/KryptKoind
+src/qt/locale/*.qm
+release/*
+debug/*
+build/*
+*.Debug
+*.Release
+kryptkoin-qt_plugin_import.cpp
+.*.swp
+*.*~*
+*.bak
+*.rej
+*.orig
+*.o
+*.patch
+Makefile
