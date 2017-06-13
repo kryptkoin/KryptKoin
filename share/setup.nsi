@@ -1,28 +1,28 @@
-Name BottleCaps
+Name KryptKoin
 
 RequestExecutionLevel highest
 SetCompressor /SOLID lzma
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 0.3.0
-!define COMPANY "BottleCaps project"
-!define URL http://
+!define VERSION 1.5.6.1
+!define COMPANY "KryptKoin project"
+!define URL https://bitcointalk.org/index.php?topic=606809.0
 
 # MUI Symbol Definitions
-!define MUI_ICON "../share/pixmaps/BottleCaps.ico"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "../share/pixmaps/nsis-wizard.bmp"
+!define MUI_ICON "pixmaps\kryptkoin.ico"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "pixmaps\nsis-wizard.bmp"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_RIGHT
-!define MUI_HEADERIMAGE_BITMAP "../share/pixmaps/nsis-header.bmp"
+!define MUI_HEADERIMAGE_BITMAP "pixmaps\nsis-header.bmp"
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT HKLM
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REGKEY}
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME StartMenuGroup
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER BottleCaps
-!define MUI_FINISHPAGE_RUN $INSTDIR\BottleCaps-qt.exe
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER KryptKoin
+!define MUI_FINISHPAGE_RUN $INSTDIR\KryptKoin-qt.exe
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "../share/pixmaps/nsis-wizard.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "pixmaps\nsis-wizard.bmp"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
 # Included files
@@ -33,26 +33,22 @@ SetCompressor /SOLID lzma
 Var StartMenuGroup
 
 # Installer pages
-!insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
 !insertmacro MUI_PAGE_INSTFILES
-!insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
-
-# Installer languages
-!insertmacro MUI_LANGUAGE English
+!insertmacro MUI_PAGE_FINISH
 
 # Installer attributes
-OutFile BottleCaps-0.3.0-win32-setup.exe
-InstallDir $PROGRAMFILES\BottleCaps
+OutFile KryptKoin-${VERSION}-setup.exe
+InstallDir $PROGRAMFILES\KryptKoin
 CRCCheck on
 XPStyle on
 BrandingText " "
 ShowInstDetails show
-VIProductVersion 0.3.0.0
-VIAddVersionKey ProductName BottleCaps
+VIProductVersion ${VERSION}
+VIAddVersionKey ProductName KryptKoin
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"
 VIAddVersionKey CompanyWebsite "${URL}"
@@ -66,19 +62,10 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    File ../release/BottleCaps-qt.exe
-    File /oname=license.txt ../COPYING
-    File /oname=readme.txt ../doc/README_windows.txt
-    SetOutPath $INSTDIR\daemon
-    File ../src/BottleCapsd.exe
-    SetOutPath $INSTDIR\src
-    File /r /x *.exe /x *.o ../src\*.*
+    File ..\release\Kryptkoin-qt.exe
+    File /oname=copying.txt ..\COPYING
     SetOutPath $INSTDIR
     WriteRegStr HKCU "${REGKEY}\Components" Main 1
-
-    # Remove old wxwidgets-based-BottleCaps executable and locales:
-    Delete /REBOOTOK $INSTDIR\BottleCaps.exe
-    RMDir /r /REBOOTOK $INSTDIR\locale
 SectionEnd
 
 Section -post SEC0001
@@ -87,8 +74,8 @@ Section -post SEC0001
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory $SMPROGRAMS\$StartMenuGroup
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\BottleCaps.lnk" $INSTDIR\BottleCaps-qt.exe
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall BottleCaps.lnk" $INSTDIR\uninstall.exe
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\KryptKoin.lnk" $INSTDIR\Kryptkoin-qt.exe
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall KryptKoin.lnk" $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
@@ -98,12 +85,10 @@ Section -post SEC0001
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString $INSTDIR\uninstall.exe
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
-
-    # BottleCaps: URI handling disabled for 0.6.0
-        WriteRegStr HKCR "BottleCaps" "URL Protocol" ""
-        WriteRegStr HKCR "BottleCaps" "" "URL:BottleCaps"
-        WriteRegStr HKCR "BottleCaps\DefaultIcon" "" $INSTDIR\BottleCaps-qt.exe
-        WriteRegStr HKCR "BottleCaps\shell\open\command" "" '"$INSTDIR\BottleCaps-qt.exe" "$$1"'
+    WriteRegStr HKCR "KryptKoin" "URL Protocol" ""
+    WriteRegStr HKCR "KryptKoin" "" "URL:KryptKoin"
+    WriteRegStr HKCR "KryptKoin\DefaultIcon" "" $INSTDIR\Kryptkoin-qt.exe
+    WriteRegStr HKCR "KryptKoin\shell\open\command" "" '"$INSTDIR\Kryptkoin-qt.exe" "$$1"'
 SectionEnd
 
 # Macro for selecting uninstaller sections
@@ -121,19 +106,16 @@ done${UNSECTION_ID}:
 
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
-    Delete /REBOOTOK $INSTDIR\BottleCaps-qt.exe
-    Delete /REBOOTOK $INSTDIR\license.txt
-    Delete /REBOOTOK $INSTDIR\readme.txt
-    RMDir /r /REBOOTOK $INSTDIR\daemon
-    RMDir /r /REBOOTOK $INSTDIR\src
+    Delete /REBOOTOK $INSTDIR\Kryptkoin-qt.exe
+    Delete /REBOOTOK $INSTDIR\copying.txt
     DeleteRegValue HKCU "${REGKEY}\Components" Main
 SectionEnd
 
 Section -un.post UNSEC0001
     DeleteRegKey HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall BottleCaps.lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\BottleCaps.lnk"
-    Delete /REBOOTOK "$SMSTARTUP\BottleCaps.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall KryptKoin.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\KryptKoin.lnk"
+    Delete /REBOOTOK "$SMSTARTUP\KryptKoin.lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     Delete /REBOOTOK $INSTDIR\debug.log
     Delete /REBOOTOK $INSTDIR\db.log
@@ -141,7 +123,7 @@ Section -un.post UNSEC0001
     DeleteRegValue HKCU "${REGKEY}" Path
     DeleteRegKey /IfEmpty HKCU "${REGKEY}\Components"
     DeleteRegKey /IfEmpty HKCU "${REGKEY}"
-    DeleteRegKey HKCR "BottleCaps"
+    DeleteRegKey HKCR "KryptKoin"
     RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup
     RmDir /REBOOTOK $INSTDIR
     Push $R0
